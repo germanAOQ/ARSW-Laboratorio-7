@@ -30,9 +30,9 @@ and open the template in the editor.
 				<span class="input-group-text" id="">
 				Inserte fila y columna </span>
 			</div>
-				<input type="text" class="form-control" id="rowInput" placeholder="Row: "></input>
-				<input type="text" class="form-control" id="colInput" placeholder="Col: "></input>
-				<button type="submit"  id="buyTicket" onclick="stomp.buyTicket()">
+				<input id="row" type="text" class="form-control" id="rowInput" placeholder="Row: "></input>
+				<input id="col" type="text" class="form-control" id="colInput" placeholder="Col: "></input>
+				<button type="submit"  id="buyTicket" onclick="app.buyTicket($('#row').val(),$('#col').val())">
 				Buy Ticket
 				</button>
 			

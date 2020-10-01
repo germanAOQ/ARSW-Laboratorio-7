@@ -61,7 +61,7 @@ var app = (function () {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/buyticket', function (eventbody) {
-               console.alert("evento recibido");
+               alert("evento recibido");
                var theObject=JSON.parse(eventbody.body);
 
             });
@@ -74,7 +74,7 @@ var app = (function () {
         if (seats[row][col]===true){
             seats[row][col]=false;
             console.info("purchased ticket");
-            stompClient.send("/app/buyticket", {}, JSON.stringify(st)); 
+            stompClient.send("/topic/buyticket", {}, JSON.stringify(st)); 
             
         }
         else{

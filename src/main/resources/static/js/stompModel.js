@@ -93,6 +93,8 @@ var app2 = (function () {
             addPointToCanvas(pt);
 
             //publicar el evento
+			//creando un objeto literal
+			stompClient.send("/topic/buyticket", {}, JSON.stringify(st));
         },
 
         disconnect: function () {
