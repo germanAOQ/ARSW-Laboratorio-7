@@ -2,6 +2,9 @@
 
 ### Escuela Colombiana de Ingeniería
 ### Arquitecturas de Software - ARSW
+### Integrantes:
+## Nicolás Ortega Limas
+## Germán Andrés Ospina Quintero
 ## Laboratorio - Broker de Mensajes STOMP con WebSockets + HTML5 Canvas. - Caso: Reserva de Boletos de Cine
 
 ### Dependencias
