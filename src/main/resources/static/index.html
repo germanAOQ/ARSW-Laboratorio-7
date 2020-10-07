@@ -1,45 +1,100 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <title>Cinema bookings</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="/webjars/jquery/jquery.min.js"></script>
-        <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-        <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-        <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-        
-        <script src="js/stomp.js"></script>
-		
-        
-    </head>
-    <body  onload="app.init()">
-        <div>
-        <canvas id="myCanvas" width="500" height="400" style="border:1px solid #000000;">
-        Your browser does not support the HTML5 canvas tag.
-        </canvas>
-        <div class= "input-group">
-			<div class="input-group-prepend" >
-				<span class="input-group-text" id="">
-				Inserte fila y columna </span>
+<html lang="en">
+<head>  
+    <title>Cinema bookings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+   
+    <script src="js/apimock.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/apiclient.js"></script>
+  
+ </head> 
+
+<body onload="app.init()">
+	<div class="container">
+		<h1>Cinema bookings</h1>
+			<label for="input">Cinema</label>
+			<input type="text" id="input" placeholder="Name">
+			<input type="date" id="date" placeholder="Date">
+			<button type="submit" id="getFunctions" onclick="app.getFunctionsByCinemaAndDate()">
+			Get Functions
+			</button>
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Cinema selected: <i id="cinemaSeleccionado"></i> 
 			</div>
-				<input id="row" type="text" class="form-control" id="rowInput" placeholder="Row: "></input>
-				<input id="col" type="text" class="form-control" id="colInput" placeholder="Col: "></input>
+			<div class="col-md-6">
+				<h2>Availability of: <i id="movieSeleccionado"></i> 
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<table style="width:100%" id="table" class="table">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Genre</th>
+						<th>Hour</th>
+						<th>Availability</th>
+						<th>Seleccionar</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+			
+			<div class="col-md-6">
+				<canvas id="myCanvas" width="500" height="400" style="border:1px solid #000000;">
+				</canvas>
+
+				</button>
+
+			</div>
+			
+		</div>
+		<br></br>
+		
+		<div class = "row">
+			
+			<div class="col-md-6"></div>
+			
+			<div id ="desplegar" class="col-md-6" style="width:540px; margin:auto; border: 1px solid black;">
+			
+				<h2>Administrator mode:</h2>
+				<label for="input"> Edit Function:</label>
+				<input type="text" id ="function" placeholder="new Hour">
+				<button type="submit" id="saveUpdate" onclick="app.actualizar();app.saveUpdate()">
+				Save/Update
+				</button>
+				<br></br>
+				<button type="submit" id="createFunction" onclick="app.guardar();app.createFunction()">
+				Create new function
+				</button>
+				<button type="submit" id="deleteFunction" onclick="app.deleteFunction()">
+				Delete Function
+				</button>
+				<br></br>
+			</div>
+		</div>
+		<br></br>
+
+		<div class = "row">
+			<div class="col-md-6"></div>
+			
+			<div class="col-md-6">
 				<button type="submit"  id="buyTicket" onclick="app.availableClick();">
 				Buy Ticket
 				</button>
-			
-			
-			
+			</div>
 		</div>
-        
-        
-        </div>
-    </body>
+	</div>
+
+</body>
 </html>

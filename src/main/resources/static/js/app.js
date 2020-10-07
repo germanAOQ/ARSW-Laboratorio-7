@@ -1,7 +1,7 @@
 var app = (function () {
 	var apiu = "js/apiclient.js";
 	
-	//Para primera parte
+	// Para primera parte
 	
 	var _cineSeleccionado;
 	
@@ -17,7 +17,7 @@ var app = (function () {
 		_fechaSeleccionada = nuevaFecha;
 	};
 	
-	//Para segunda parte
+	// Para segunda parte
 	
 	var _peliculaSeleccionada;
 	
@@ -27,29 +27,125 @@ var app = (function () {
 	
 	var _seatsSeleccionados = [[true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true], [true, true, true, true, true, true, true, true, true, true, true, true]];
 	
-	//Para tercera parte
+	// Para tercera parte
 	var tipo;
 	
-	/*
-	function getFunctionsByCinema(){
-		_cineSeleccionado = $("#input").val();
-		listaFunciones;
-		apimock.getFunctionsByCinema(_cineSeleccionado, function(funcion){
-			listaFunciones = funcion.functions;
-		});
-		for(int i=0; i<listaFunciones.length; i++){
-			movieName = listaFunciones[i].movie.name;
-            gender = listaFunciones[i].movie.genre;
-            hour = listaFunciones[i].date.substring(11, 16);
-			disponibilidad = isDisponible(listaFunciones[i].seats);
-			var row = '<tr><td>' + movieName + '</td><td>' + gender + '</td><td>' + hour + '</td><td>' + disponibilidad +'</tr>';
-			$("#table").append(row);
+	// Para laboratorio 7
+	var posiciones = [];
+	var c,ctx;
+	var stompClient = null;
+	var seats;
+	var _fechaOriginal;
+	var selectPelicula;
+	
+	class Seat {
+        constructor(row, col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+    
+    class Posicion {
+    	constructor(posX, posY, row, col)
+		{
+			this.posX = posX;
+			this.posY = posY;
+			this.row = row;
+			this.col = col;
 		}
-		
-		
-		
+    };
+
+	
+    var getMousePosition = function (evt) {
+    	var canvas = document.getElementById("myCanvas");
+    	var x,y;
+        $('#myCanvas').click(function (e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            // console.info(x);
+            // console.info(y);
+            calcularAsiento(x,y);
+        });
+        
+    };
+    
+    function calcularAsiento(x, y) {
+        var row = Math.trunc(x/10);
+        var col = Math.trunc(y/10);
+        row = row*10;
+        col = col*10;
+        rowRes = 0;
+        colRes = 0;
+        for(i=0; i<posiciones.length; i++){
+        	if(posiciones[i].posX == row && posiciones[i].posY == col){
+        		rowRes = posiciones[i].row;
+        		colRes = posiciones[i].col;
+        	}
+        }
+        console.log("row: "+rowRes);
+        console.log("col: "+colRes);
+        verifyAvailability(rowRes,colRes);
+    };
+    
+    var connectAndSubscribe = function () {
+        console.info('Connecting to WS...');
+        var socket = new SockJS('/stompendpoint');
+        stompClient = Stomp.over(socket);
+
+        // subscribe to /topic/TOPICXX when connections succeed
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/buyticket', function (eventbody) {
+               alert("evento recibido");
+               var theObject=JSON.parse(eventbody.body);
+               updatePoint(theObject.row, theObject.col);
+            });
+        });
+
+    };
+
+    var updatePoint = function(row, col) {
+    	c.width = c.width;
+    	seats[row][col] = false;
+    	selectPelicula = false;
+    	redibujarSala();
 	}
-	*/
+    
+    var verifyAvailability = function (row,col) {
+        var st = new Seat(row, col);
+        if (seats[row][col]===true){
+            seats[row][col]=false;
+            updatePoint(row,col);
+            // console.info("purchased ticket");
+            stompClient.send("/topic/buyticket", {}, JSON.stringify(st)); 
+            updatePoint(st.row,st.col);
+            // updateCanvas();
+            
+        }
+        else{
+            console.info("Ticket not available");
+        }  
+
+    };
+    
+    function availableClick(){
+    	var canvas = document.getElementById("myCanvas");
+    	getMousePosition(canvas.onclick = function() {
+    	});
+    };
+    
+	/*
+	 * function getFunctionsByCinema(){ _cineSeleccionado = $("#input").val();
+	 * listaFunciones; apimock.getFunctionsByCinema(_cineSeleccionado,
+	 * function(funcion){ listaFunciones = funcion.functions; }); for(int i=0; i<listaFunciones.length;
+	 * i++){ movieName = listaFunciones[i].movie.name; gender =
+	 * listaFunciones[i].movie.genre; hour =
+	 * listaFunciones[i].date.substring(11, 16); disponibilidad =
+	 * isDisponible(listaFunciones[i].seats); var row = '<tr><td>' +
+	 * movieName + '</td><td>' + gender + '</td><td>' + hour + '</td><td>' +
+	 * disponibilidad +'</tr>'; $("#table").append(row); } }
+	 */
 	
 	function getFunctionsByCinemaAndDate() {
           _cineSeleccionado = $("#input").val();
@@ -60,53 +156,73 @@ var app = (function () {
 		  
       }
 	
-	function dibujarSala(functions){
-		
+	/**
+	 * function dibujarSala(functions){
+	 * 
+	 * var mapFunctions = functions.map( function (f) { f.movie.name;
+	 * f.movie.genre; f.date.substring(11, 16); f.seats;
+	 * 
+	 * }); var funcion = functions.filter(funct => funct.movie.name ==
+	 * _peliculaSeleccionada); console.log() var asientos = funcion[0].seats;
+	 * console.log(asientos); var c = document.getElementById("myCanvas"); var
+	 * ctx = c.getContext("2d"); console.log(asientos); ctx.fillStyle =
+	 * "#8D792C"; ctx.fillRect(30, 10, 450, 30);
+	 * 
+	 * var column = 10; for(var i = 0; i < asientos.length; i++){ var row = 10;
+	 * var add = 0; for(var j = 0; j < asientos[i].length; j++){ if (j==2 ||
+	 * j==10){ add+=20; } else{ add+=0; } if(asientos[i][j] == true){
+	 * ctx.fillStyle = "#0043B2"; ctx.fillRect(row+5+add, column+100, 30, 30);
+	 * }else{ ctx.fillStyle = "#FF0000"; ctx.fillRect(row+5+add, column+100, 30,
+	 * 30); } row = row+40; } column = column+40; }
+	 * 
+	 * $("#sillas").text(conteoSillasLibres(asientos)); }
+	 */
+	var dibujarSala = function (functions) {
 		var mapFunctions = functions.map(
-          function (f) {
-              f.movie.name;
-              f.movie.genre;
-              f.date.substring(11, 16);
-			  f.seats;
-			 
-          });
+		          function (f) {
+		              f.movie.name;
+		              f.movie.genre;
+		              f.date.substring(11, 16);
+					  f.seats;
+					 
+		          });
 		var funcion =  functions.filter(funct => funct.movie.name == _peliculaSeleccionada);
 		console.log()
-		var asientos = funcion[0].seats;
-		console.log(asientos);
-		var c = document.getElementById("myCanvas");
-		var ctx = c.getContext("2d");
-		console.log(asientos);
-		ctx.fillStyle = "#8D792C";
-		ctx.fillRect(30, 10, 450, 30);
-		
-		var column = 10;	
-		for(var i = 0; i < asientos.length; i++){
-			var row = 10;
-			var add = 0;
-			for(var j = 0; j < asientos[i].length; j++){
-				if (j==2 ||  j==10){
-					add+=20;
-				}
-				else{
-					add+=0;
-				}
-				if(asientos[i][j] == true){
-					ctx.fillStyle = "#0043B2";
-					ctx.fillRect(row+5+add, column+100, 30, 30);
-				}else{
-					ctx.fillStyle = "#FF0000";
-					ctx.fillRect(row+5+add, column+100, 30, 30);
-				}
-				row = row+40;
-			}
-			column = column+40;
+		if(selectPelicula){
+			seats = funcion[0].seats;
 		}
-		
-		$("#sillas").text(conteoSillasLibres(asientos));
-	}
-	
-	
+        c = document.getElementById("myCanvas");
+        ctx = c.getContext("2d");
+        ctx.fillStyle = "#001933";
+        ctx.fillRect(100, 20, 300, 80);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "40px Arial";
+        ctx.fillText("Screen", 180, 70);
+        var row = 5;
+        var col = 0;
+        rowTemp=0;
+        for (var i = 0; i < seats.length; i++) {
+            row++;
+            col = 0;
+            colTemp=0;
+            for (j = 0; j < seats[i].length; j++) {
+                if (seats[i][j]) {
+                    ctx.fillStyle = "#009900";
+                } else {
+                    ctx.fillStyle = "#FF0000";
+                }
+                col++;
+                posiciones.push(new Posicion(20 * col, 20 * row, rowTemp, colTemp));
+                ctx.fillRect(20 * col, 20 * row, 20, 20);
+                col++;
+                colTemp++;
+            }
+            row++;
+            rowTemp++;
+        }
+        console.log(posiciones);
+        $("#sillas").text(conteoSillasLibres(seats));
+    };
 	
 	
 	function conteoSillasLibres(functions){
@@ -125,7 +241,7 @@ var app = (function () {
 		_peliculaSeleccionada = functions;
 		_generoSeleccionado = genero;
 		_fechaSeleccionadaSaveUpdate = fecha;
-		//_seatsSeleccionados = puestos;
+		// _seatsSeleccionados = puestos;
 		$("#movieSeleccionado").text(_peliculaSeleccionada);
 	}
 	
@@ -136,6 +252,7 @@ var app = (function () {
 	}
 	
 	function convertElementsToObject(functions) {
+		selectPelicula = true;
 		$("table").find("tr:gt(0)").remove();
 		$("#cinemaSeleccionado").text(_cineSeleccionado);
 		
@@ -144,6 +261,7 @@ var app = (function () {
           function (f) {
               f.movie.name;
               f.movie.genre;
+              _fechaOriginal = f.date;
               f.date.substring(11, 16);
 			  f.seats;
 				
@@ -263,6 +381,13 @@ var app = (function () {
 	
 	
 	return {
+		init: function () {
+            // var can = document.getElementById("canvas");
+            // drawSeats();
+            // websocket connection
+            connectAndSubscribe();
+        },
+        availableClick: availableClick,
 		cambiarNombreCinema: cambiarNombreCinema,
 		cambiarFecha: cambiarFecha,
 		getFunctionsByCinemaAndDate: getFunctionsByCinemaAndDate,
