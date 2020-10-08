@@ -34,7 +34,7 @@ var app = (function () {
 	var posiciones = [];
 	var c,ctx;
 	var stompClient = null;
-	var seats;
+	var seats = [];
 	var _fechaOriginal;
 	var selectPelicula;
 	var nombreCinema;
@@ -111,15 +111,25 @@ var app = (function () {
 
     var updatePoint = function(row, col) {
     	c.width = c.width;
-    	seats[row][col] = false;
+    	//seats[row][col] = false;
     	nombreCinema = nombreCinema.replace(" ","%20");
     	nombrePelicula = nombrePelicula.replace(" ","%20");
-    	$.getScript(apiu, function(){
-			api.updateSeatsByCinemaAndMovie(nombreCinema, nombrePelicula, row, col, redibujarSala);
-		});
+    	console.log(disponibleSilla(row,col));
+    	if(!disponibleSilla(row,col)){
+			$.getScript(apiu, function(){
+				api.updateSeatsByCinemaAndMovie(nombreCinema, nombrePelicula, row, col, redibujarSala);
+			});
+    	}else{
+    		redibujarSala();
+    	}	
+    	
     	//selectPelicula = false;
     	//redibujarSala();
 	}
+    
+    function disponibleSilla(row,col){
+    	return seats[row][col];
+    }
     
     var verifyAvailability = function (row,col) {
         var st = new Seat(row, col);
@@ -196,7 +206,6 @@ var app = (function () {
 					 
 		          });
 		var funcion =  functions.filter(funct => funct.movie.name == _peliculaSeleccionada);
-		console.log()
 		//if(selectPelicula){
 		seats = funcion[0].seats;
 		//}
