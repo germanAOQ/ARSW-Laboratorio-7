@@ -17,7 +17,7 @@
   
  </head> 
 
-<body onload="app.init()">
+<body> <!--  onload="app.init()"-->
 	<div class="container">
 		<h1>Cinema bookings</h1>
 			<label for="input">Cinema</label>
@@ -54,16 +54,9 @@
 				<canvas id="myCanvas" width="500" height="400" style="border:1px solid #000000;">
 				</canvas>
 
-				</button>
-
 			</div>
-			
-		</div>
-		<br></br>
-		
-		<div class = "row">
-			
-			<div class="col-md-6"></div>
+			<div class="col-md-6">
+			</div>
 			
 			<div id ="desplegar" class="col-md-6" style="width:540px; margin:auto; border: 1px solid black;">
 			
@@ -80,19 +73,32 @@
 				<button type="submit" id="deleteFunction" onclick="app.deleteFunction()">
 				Delete Function
 				</button>
-				<br></br>
-			</div>
-		</div>
-		<br></br>
-
-		<div class = "row">
-			<div class="col-md-6"></div>
-			
-			<div class="col-md-6">
 				<button type="submit"  id="buyTicket" onclick="app.availableClick();">
 				Buy Ticket
 				</button>
+				<br></br>
 			</div>
+			
+		</div>
+		<br>
+		<div class = "row">
+			<div class="col-md-6">
+			</div>
+			<div class="col-md-6" style="width:540px; margin:auto; border: 1px solid black;">
+					<br>
+					<label for="nombreCinema">Nombre del cinema</label>
+					<input id="nombreCinema" type="text" class="form-control" placeholder="Nombre del cinema" aria-label="Username" aria-describedby="basic-addon1"/>
+					<label for="nombrePelicula">Nombre de la película</label>
+					<input id="nombrePelicula" type="text" class="form-control" placeholder="Nombre de la pelicula" aria-label="Username" aria-describedby="basic-addon1"/>
+					<label for="dateFuncion">Fecha de la función</label><br>
+					<input type="date" id="dateFuncion" placeholder="Date"/> <br></br>
+					<button type="button" class="btn btn-light" onclick="app.conectar();">Conectarse</button>
+					<br></br>
+			</div>
+			
+			<div style="margin:auto">
+			</div>
+			
 		</div>
 	</div>
 

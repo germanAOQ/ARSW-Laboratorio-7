@@ -37,6 +37,7 @@ var app = (function () {
 	var seats;
 	var _fechaOriginal;
 	var selectPelicula;
+	var codigoGenerado;
 	
 	class Seat {
         constructor(row, col) {
@@ -96,8 +97,8 @@ var app = (function () {
         // subscribe to /topic/TOPICXX when connections succeed
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/buyticket', function (eventbody) {
-               alert("evento recibido");
+            stompClient.subscribe("/topic/"+codigoGenerado, function (eventbody) {
+               //alert("Compra realizada");
                var theObject=JSON.parse(eventbody.body);
                updatePoint(theObject.row, theObject.col);
             });
@@ -118,7 +119,7 @@ var app = (function () {
             seats[row][col]=false;
             updatePoint(row,col);
             // console.info("purchased ticket");
-            stompClient.send("/topic/buyticket", {}, JSON.stringify(st)); 
+            stompClient.send("/topic/"+codigoGenerado, {}, JSON.stringify(st)); 
             updatePoint(st.row,st.col);
             // updateCanvas();
             
@@ -386,6 +387,14 @@ var app = (function () {
             // drawSeats();
             // websocket connection
             connectAndSubscribe();
+        },
+        conectar: function (){
+        	var nombreCinema = $("#nombreCinema").val();
+        	var nombrePelicula = $("#nombrePelicula").val();
+        	var fecha = $("#dateFuncion").val();
+        	codigoGenerado = "buyticket."+nombreCinema+"."+fecha+"."+nombrePelicula;
+        	console.log(codigoGenerado);
+        	connectAndSubscribe();
         },
         availableClick: availableClick,
 		cambiarNombreCinema: cambiarNombreCinema,
