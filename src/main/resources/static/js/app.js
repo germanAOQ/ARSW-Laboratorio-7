@@ -221,7 +221,6 @@ var app = (function () {
             row++;
             rowTemp++;
         }
-        console.log(posiciones);
         $("#sillas").text(conteoSillasLibres(seats));
     };
 	
