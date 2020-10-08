@@ -70,7 +70,7 @@ public class CinemaServices {
     }
     
     
-    public void buyTicket(int row, int col, String cinema, String date, String movieName){
+    public synchronized void buyTicket(int row, int col, String cinema, String date, String movieName){
         try {
             cps.buyTicket(row, col, cinema, date, movieName);
         } catch (CinemaException ex) {

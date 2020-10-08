@@ -127,11 +127,11 @@ public ResponseEntity<?> updateSeatsByCinemaAndMovie(@PathVariable String name, 
 	try {
 		cinemaServices.updateSeatsByCinemaAndMovie(name, movie, row, col);
 	} catch (NumberFormatException e) {
-		Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+		//Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
+        //return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 	} catch (CinemaException e) {
-		Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+		//Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
+        //return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 	}
 	
 	return new ResponseEntity<>(HttpStatus.CREATED); 

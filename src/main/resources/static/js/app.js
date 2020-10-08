@@ -92,6 +92,24 @@ var app = (function () {
         verifyAvailability(rowRes,colRes);
     };
     
+    var verifyAvailability = function (row,col) {
+        var st = new Seat(row, col);
+        if (seats[row][col]===true){
+            seats[row][col]=false;
+            //updatePoint(row,col);
+            // console.info("purchased ticket");
+            stompClient.send("/app/"+codigoGenerado, {}, JSON.stringify(st)); 
+            //updatePoint(st.row,st.col);
+            // updateCanvas();
+            
+        }
+        else{
+            console.info("Ticket not available");
+        }  
+
+    };
+    
+    
     var connectAndSubscribe = function () {
         console.info('Connecting to WS...');
         var socket = new SockJS('/stompendpoint');
@@ -101,9 +119,10 @@ var app = (function () {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe("/topic/"+codigoGenerado, function (eventbody) {
-               //alert("Compra realizada");
                var theObject=JSON.parse(eventbody.body);
-               updatePoint(theObject.row, theObject.col);
+               //updatePoint(theObject.row, theObject.col);
+               redibujarSala();
+               //alert("Compra realizada");
             });
         });
 
@@ -115,13 +134,11 @@ var app = (function () {
     	nombreCinema = nombreCinema.replace(" ","%20");
     	nombrePelicula = nombrePelicula.replace(" ","%20");
     	console.log(disponibleSilla(row,col));
-    	if(!disponibleSilla(row,col)){
-			$.getScript(apiu, function(){
-				api.updateSeatsByCinemaAndMovie(nombreCinema, nombrePelicula, row, col, redibujarSala);
-			});
-    	}else{
-    		redibujarSala();
-    	}	
+    	//if(!disponibleSilla(row,col)){
+		//	$.getScript(apiu, function(){
+		api.updateSeatsByCinemaAndMovie(nombreCinema, nombrePelicula, row, col, redibujarSala);
+		//	});
+    	//}	
     	
     	//selectPelicula = false;
     	//redibujarSala();
@@ -131,23 +148,7 @@ var app = (function () {
     	return seats[row][col];
     }
     
-    var verifyAvailability = function (row,col) {
-        var st = new Seat(row, col);
-        if (seats[row][col]===true){
-            seats[row][col]=false;
-            updatePoint(row,col);
-            // console.info("purchased ticket");
-            stompClient.send("/app/"+codigoGenerado, {}, JSON.stringify(st)); 
-            updatePoint(st.row,st.col);
-            // updateCanvas();
-            
-        }
-        else{
-            console.info("Ticket not available");
-        }  
-
-    };
-    
+   
     function availableClick(){
     	var canvas = document.getElementById("myCanvas");
     	getMousePosition(canvas.onclick = function() {
@@ -208,6 +209,7 @@ var app = (function () {
 		var funcion =  functions.filter(funct => funct.movie.name == _peliculaSeleccionada);
 		//if(selectPelicula){
 		seats = funcion[0].seats;
+		console.log(seats);
 		//}
         c = document.getElementById("myCanvas");
         ctx = c.getContext("2d");
@@ -266,6 +268,7 @@ var app = (function () {
 		$.getScript(apiu, function(){
 				api.getFunctionsByCinemaAndDate(_cineSeleccionado, _fechaSeleccionada, dibujarSala);
 			});
+		
 	}
 	
 	function convertElementsToObject(functions) {
@@ -291,7 +294,7 @@ var app = (function () {
 			fecha = functions[i].date;
 			puestos = functions[i].seats;
 			disponibilidad = isDisponible(functions[i].seats);
-			var row = '<tr><td>' + movieName + '</td><td>' + gender + '</td><td>' + hour + '</td><td>' + true +'</td><td>'+"<button type='button' class='btn btn-primary'onclick='app.asignarPelicula(\""+ movieName +"\",\""+gender+"\",\""+fecha+"\",\""+puestos+"\"); app.redibujarSala();' > "+'</td><td>'+'</tr>';
+			var row = '<tr><td>' + movieName + '</td><td>' + gender + '</td><td>' + hour + '</td><td>' + true +'</td><td>'+"<button type='button' class='btn btn-primary'onclick='app.asignarPelicula(\""+ movieName +"\",\""+gender+"\",\""+fecha+"\",\""+puestos+"\"); app.redibujarSala();app.conectar();' > "+'</td><td>'+'</tr>';
 			$("#table").append(row);
 		}
 		  
@@ -405,9 +408,9 @@ var app = (function () {
             connectAndSubscribe();
         },
         conectar: function (){
-        	nombreCinema = $("#nombreCinema").val();
-        	nombrePelicula = $("#nombrePelicula").val();
-        	fecha = $("#dateFuncion").val();
+        	nombreCinema = $("#input").val();
+        	nombrePelicula = _peliculaSeleccionada;
+        	fecha = $("#date").val();
         	codigoGenerado = "buyticket."+nombreCinema+"."+fecha+"."+nombrePelicula;
         	console.log(codigoGenerado);
         	connectAndSubscribe();
