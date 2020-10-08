@@ -72,4 +72,6 @@ public interface CinemaPersitence {
 	public void updateDateCinemaFunction(String name, CinemaFunction cf) throws CinemaPersistenceException;
 
 	public void deleteCinemaFunction(String name, CinemaFunction cf) throws CinemaPersistenceException;
+	
+	public void updateSeatsByCinemaAndMovie(String name, String movie, String row, String col) throws NumberFormatException, CinemaException;
 }

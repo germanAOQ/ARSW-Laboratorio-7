@@ -131,4 +131,7 @@ public class CinemaServices {
 		
 	}
 
+	public void updateSeatsByCinemaAndMovie(String name, String movie, String row, String col) throws NumberFormatException, CinemaException {
+		cps.updateSeatsByCinemaAndMovie(name, movie, row, col);
+	}
 }

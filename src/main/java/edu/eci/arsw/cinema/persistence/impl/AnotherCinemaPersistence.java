@@ -143,4 +143,10 @@ public class AnotherCinemaPersistence implements CinemaPersitence {
 		
 	}
 
+	@Override
+	public void updateSeatsByCinemaAndMovie(String name, String movie, String row, String col) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

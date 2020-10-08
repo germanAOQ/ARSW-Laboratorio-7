@@ -122,6 +122,20 @@ public ResponseEntity<?> updateCinemaByName(@PathVariable String name, @RequestB
 	return new ResponseEntity<>(HttpStatus.CREATED);
 }
 
+@RequestMapping(value="/{name}/{movie}/{row}/{col}", method = RequestMethod.GET)
+public ResponseEntity<?> updateSeatsByCinemaAndMovie(@PathVariable String name, @PathVariable String movie, @PathVariable String row, @PathVariable String col){
+	try {
+		cinemaServices.updateSeatsByCinemaAndMovie(name, movie, row, col);
+	} catch (NumberFormatException e) {
+		Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+	} catch (CinemaException e) {
+		Logger.getLogger(CinemaAPIController.class.getName()).log(Level.SEVERE, null, e);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+	}
+	
+	return new ResponseEntity<>(HttpStatus.CREATED); 
+}
 
 @RequestMapping(value="/{nameC}/{movie}", method = RequestMethod.PUT)	
 public ResponseEntity<?> updateDateCinemaFunction(@PathVariable String nameC,@PathVariable String movie, @RequestBody CinemaFunction cf){

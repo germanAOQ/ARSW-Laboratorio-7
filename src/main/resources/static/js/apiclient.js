@@ -9,6 +9,13 @@ api = (function () {
                 });
                 return callback(f[name])
         },
+        
+        updateSeatsByCinemaAndMovie(name, movie, row, col, callback){
+        	$.get(Url+name+"/"+movie+"/"+row+"/"+col, function() {
+				callback();
+			})
+        },
+        
 		getFunctionsByCinemaAndDate: function (name, date, callback) {
 			
 			//console.log(name);

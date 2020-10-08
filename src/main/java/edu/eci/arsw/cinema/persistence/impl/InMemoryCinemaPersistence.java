@@ -189,6 +189,16 @@ public class InMemoryCinemaPersistence implements CinemaPersitence {
 		
 	}
 
+	@Override
+	public void updateSeatsByCinemaAndMovie(String name, String movie, String row, String col) throws NumberFormatException, CinemaException {
+		for(CinemaFunction cf : cinemas.get(name).getFunctions()) {
+			if(cf.getMovie().getName().equals(movie)) {
+				cf.buyTicket(Integer.parseInt(row), Integer.parseInt(col));
+			}
+		}
+		
+	}
+
 
 
 }
