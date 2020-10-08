@@ -137,7 +137,7 @@ var app = (function () {
             seats[row][col]=false;
             updatePoint(row,col);
             // console.info("purchased ticket");
-            stompClient.send("/topic/"+codigoGenerado, {}, JSON.stringify(st)); 
+            stompClient.send("/app/"+codigoGenerado, {}, JSON.stringify(st)); 
             updatePoint(st.row,st.col);
             // updateCanvas();
             

@@ -160,5 +160,6 @@ public ResponseEntity<?> updateDateCinemaFunction(@PathVariable String name, @Re
 }
 
 
+
 }
 

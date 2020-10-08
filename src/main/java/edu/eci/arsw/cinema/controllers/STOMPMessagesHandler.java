@@ -20,3 +20,4 @@ public class STOMPMessagesHandler {
 		msgt.convertAndSend("/topic/buyticket."+cinemaName+"."+functionDate+"."+movieName, st);
 	}
 }
+
