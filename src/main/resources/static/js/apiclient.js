@@ -1,4 +1,5 @@
-var Url = 'http://localhost:8080/cinemas/';
+var Url = "http://"+$(location).attr('hostname')+":"+$(location).attr('port')+"/cinemas/";
+console.log(Url);
 api = (function () {
     var f=[]
 	var g=[]
